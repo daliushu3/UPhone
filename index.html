@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CPhone</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+    <div id="phone-screen">
+        <!-- 主屏幕 -->
+        <div id="home-screen" class="screen active">
+            <!-- 时间戳卡片 (上方1/5) -->
+            <div id="timestamp-card">
+                <div id="current-time">12:00</div>
+                <div id="current-date">
+                    <span id="year-month-day">2025年1月1日</span>
+                    <span id="weekday">星期一</span>
+                </div>
+            </div>
+
+            <!-- 应用图标区域 -->
+            <div id="app-grid-container">
+                <div class="app-row">
+                    <div class="app-icon" onclick="openApp('wechat')">
+                        <div class="icon-bg">
+                            <img src="https://via.placeholder.com/80?text=微信" alt="微信">
+                        </div>
+                        <span class="label">微信</span>
+                    </div>
+                    <div class="app-icon" onclick="openApp('x')">
+                        <div class="icon-bg">
+                            <img src="https://via.placeholder.com/80?text=X" alt="X">
+                        </div>
+                        <span class="label">X</span>
+                    </div>
+                    <div class="app-icon" onclick="openApp('games')">
+                        <div class="icon-bg">
+                            <img src="https://via.placeholder.com/80?text=游戏" alt="游戏大厅">
+                        </div>
+                        <span class="label">游戏大厅</span>
+                    </div>
+                    <div class="app-icon" onclick="openApp('worldbook')">
+                        <div class="icon-bg">
+                            <img src="https://via.placeholder.com/80?text=世界书" alt="世界书">
+                        </div>
+                        <span class="label">世界书</span>
+                    </div>
+                </div>
+                <div class="app-row">
+                    <div class="app-icon" onclick="openApp('preset')">
+                        <div class="icon-bg">
+                            <img src="https://via.placeholder.com/80?text=预设" alt="预设">
+                        </div>
+                        <span class="label">预设</span>
+                    </div>
+                    <div class="app-icon" onclick="openApp('renderer')">
+                        <div class="icon-bg">
+                            <img src="https://via.placeholder.com/80?text=渲染" alt="渲染器">
+                        </div>
+                        <span class="label">渲染器</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部菜单栏 -->
+            <div id="bottom-menu">
+                <div class="menu-item" onclick="openApp('settings')">
+                    <div class="menu-icon">⚙️</div>
+                    <span>设置</span>
+                </div>
+                <div class="menu-item" onclick="openApp('theme')">
+                    <div class="menu-icon">🎨</div>
+                    <span>主题</span>
+                </div>
+                <div class="menu-item" onclick="openApp('cphone')">
+                    <div class="menu-icon">📱</div>
+                    <span>Cphone</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 微信聊天界面 -->
+        <div id="wechat-screen" class="screen">
+            <div class="header">
+                <span class="back-btn" onclick="backToHome()">‹</span>
+                <span>微信</span>
+                <span class="action-btn" onclick="addWechatChat()">+</span>
+            </div>
+            <div id="wechat-chat-list" class="list-container">
+                <!-- 聊天列表 -->
+            </div>
+        </div>
+
+        <!-- 微信聊天对话界面 -->
+        <div id="wechat-conversation-screen" class="screen">
+            <div class="header">
+                <span class="back-btn" onclick="backToWechat()">‹</span>
+                <span id="conversation-name">对话</span>
+                <span style="width: 30px;"></span>
+            </div>
+            <div id="conversation-messages" class="list-container">
+                <!-- 消息 -->
+            </div>
+            <div class="input-area">
+                <input type="text" id="message-input" placeholder="输入消息...">
+                <button onclick="sendMessage()">发送</button>
+            </div>
+        </div>
+
+        <!-- X社交界面 -->
+        <div id="x-screen" class="screen">
+            <div class="header">
+                <span class="back-btn" onclick="backToHome()">‹</span>
+                <span>X</span>
+                <span class="action-btn" onclick="postTweet()">+</span>
+            </div>
+            <div id="x-feed" class="list-container">
+                <!-- 推文 -->
+            </div>
+        </div>
+
+        <!-- 游戏大厅界面 -->
+        <div id="games-screen" class="screen">
+            <div class="header">
+                <span class="back-btn" onclick="backToHome()">‹</span>
+                <span>游戏大厅</span>
+                <span style="width: 30px;"></span>
+            </div>
+            <div class="game-list">
+                <div class="game-card" onclick="openGame('werewolf')">
+                    <div class="game-icon">🐺</div>
+                    <div class="game-info">
+                        <h3>狼人杀</h3>
+                        <p>经典推理游戏</p>
+                    </div>
+                </div>
+                <div class="game-card" onclick="openGame('turtle-soup')">
+                    <div class="game-icon">🐢</div>
+                    <div class="game-info">
+                        <h3>海龟汤</h3>
+                        <p>情景推理游戏</p>
+                    </div>
+                </div>
+                <div class="game-card" onclick="openGame('guess')">
+                    <div class="game-icon">🎭</div>
+                    <div class="game-info">
+                        <h3>你说我猜</h3>
+                        <p>猜词互动游戏</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设置界面 -->
+        <div id="settings-screen" class="screen">
+            <div class="header">
+                <span class="back-btn" onclick="backToHome()">‹</span>
+                <span>设置</span>
+                <span style="width: 30px;"></span>
+            </div>
+            <div class="form-container">
+                <div class="form-group">
+                    <label>API地址</label>
+                    <input type="text" id="api-url" placeholder="输入API地址">
+                </div>
+                <div class="form-group">
+                    <label>API密钥</label>
+                    <input type="password" id="api-key" placeholder="输入API密钥">
+                </div>
+                <button class="form-button" onclick="saveSettings()">保存设置</button>
+            </div>
+        </div>
+
+        <!-- 主题界面 -->
+        <div id="theme-screen" class="screen">
+            <div class="header">
+                <span class="back-btn" onclick="backToHome()">‹</span>
+                <span>主题</span>
+                <span style="width: 30px;"></span>
+            </div>
+            <div class="form-container">
+                <div class="form-group">
+                    <label>背景图片</label>
+                    <input type="file" id="bg-upload" accept="image/*" onchange="uploadBackground()">
+                </div>
+                <div class="form-group">
+                    <label>主题颜色</label>
+                    <input type="color" id="theme-color" value="#007bff" onchange="changeThemeColor()">
+                </div>
+                <button class="form-button" onclick="saveTheme()">保存主题</button>
+            </div>
+        </div>
+
+        <!-- 世界书界面 -->
+        <div id="worldbook-screen" class="screen">
+            <div class="header">
+                <span class="back-btn" onclick="backToHome()">‹</span>
+                <span>世界书</span>
+                <span class="action-btn" onclick="addWorldBook()">+</span>
+            </div>
+            <div id="worldbook-list" class="list-container">
+                <!-- 世界书列表 -->
+            </div>
+        </div>
+
+        <!-- 预设界面 -->
+        <div id="preset-screen" class="screen">
+            <div class="header">
+                <span class="back-btn" onclick="backToHome()">‹</span>
+                <span>预设</span>
+                <span class="action-btn" onclick="addPreset()">+</span>
+            </div>
+            <div id="preset-list" class="list-container">
+                <!-- 预设列表 -->
+            </div>
+        </div>
+
+        <!-- 渲染器界面 -->
+        <div id="renderer-screen" class="screen">
+            <div class="header">
+                <span class="back-btn" onclick="backToHome()">‹</span>
+                <span>渲染器</span>
+                <span style="width: 30px;"></span>
+            </div>
+            <div class="form-container">
+                <div class="form-group">
+                    <label>渲染规则</label>
+                    <textarea id="render-rules" rows="10" placeholder="输入渲染规则..."></textarea>
+                </div>
+                <button class="form-button" onclick="saveRenderRules()">保存规则</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
