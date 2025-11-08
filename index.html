@@ -99,14 +99,73 @@
             <div class="header">
                 <span class="back-btn" onclick="backToWechat()">‹</span>
                 <span id="conversation-name">对话</span>
-                <span style="width: 30px;"></span>
+                <span class="action-btn" onclick="showConversationMenu()">⋯</span>
             </div>
             <div id="conversation-messages" class="list-container">
                 <!-- 消息 -->
             </div>
             <div class="input-area">
+                <button onclick="toggleEmojis()" class="icon-btn">😊</button>
+                <button onclick="sendImage()" class="icon-btn">🖼️</button>
+                <button onclick="sendLocation()" class="icon-btn">📍</button>
                 <input type="text" id="message-input" placeholder="输入消息...">
                 <button onclick="sendMessage()">发送</button>
+            </div>
+            <div id="emoji-panel" class="emoji-panel" style="display: none;">
+                <span onclick="insertEmoji('😊')">😊</span>
+                <span onclick="insertEmoji('😂')">😂</span>
+                <span onclick="insertEmoji('❤️')">❤️</span>
+                <span onclick="insertEmoji('👍')">👍</span>
+                <span onclick="insertEmoji('🎉')">🎉</span>
+                <span onclick="insertEmoji('🔥')">🔥</span>
+                <span onclick="insertEmoji('💯')">💯</span>
+                <span onclick="insertEmoji('😍')">😍</span>
+                <span onclick="insertEmoji('🤔')">🤔</span>
+                <span onclick="insertEmoji('😭')">😭</span>
+            </div>
+        </div>
+
+        <!-- 对话菜单界面 -->
+        <div id="conversation-menu-screen" class="screen">
+            <div class="header">
+                <span class="back-btn" onclick="backToConversation()">‹</span>
+                <span>对话设置</span>
+                <span style="width: 30px;"></span>
+            </div>
+            <div class="form-container">
+                <h3 class="section-title">角色管理</h3>
+                <div class="form-group">
+                    <label>AI角色</label>
+                    <select id="ai-role" onchange="changeRole()">
+                        <option value="">默认助手</option>
+                        <option value="translator">翻译官</option>
+                        <option value="writer">作家</option>
+                        <option value="teacher">老师</option>
+                        <option value="friend">朋友</option>
+                        <option value="custom">自定义...</option>
+                    </select>
+                </div>
+                <div class="form-group" id="custom-role-group" style="display: none;">
+                    <label>自定义角色提示词</label>
+                    <textarea id="custom-role-prompt" rows="4" placeholder="输入角色设定..."></textarea>
+                </div>
+
+                <h3 class="section-title">对话统计</h3>
+                <div class="stats-card">
+                    <div class="stat-item">
+                        <span class="stat-label">消息数</span>
+                        <span class="stat-value" id="message-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Token数</span>
+                        <span class="stat-value" id="token-count">0</span>
+                    </div>
+                </div>
+
+                <h3 class="section-title">操作</h3>
+                <button class="form-button" onclick="generateSummary()">生成对话总结</button>
+                <button class="form-button" onclick="exportConversation()">导出对话</button>
+                <button class="form-button danger" onclick="clearConversation()">清空对话</button>
             </div>
         </div>
 
@@ -159,17 +218,74 @@
             <div class="header">
                 <span class="back-btn" onclick="backToHome()">‹</span>
                 <span>设置</span>
-                <span style="width: 30px;"></span>
+                <span class="action-btn" onclick="exportData()">📤</span>
             </div>
             <div class="form-container">
+                <h3 class="section-title">聊天API设置</h3>
                 <div class="form-group">
                     <label>API地址</label>
-                    <input type="text" id="api-url" placeholder="输入API地址">
+                    <input type="text" id="api-url" placeholder="https://api.openai.com/v1/chat/completions">
                 </div>
                 <div class="form-group">
                     <label>API密钥</label>
-                    <input type="password" id="api-key" placeholder="输入API密钥">
+                    <input type="password" id="api-key" placeholder="sk-...">
                 </div>
+                <div class="form-group">
+                    <label>模型</label>
+                    <input type="text" id="api-model" placeholder="gpt-4" value="gpt-4">
+                </div>
+                <div class="form-group">
+                    <label>温度 (0.0-2.0)</label>
+                    <input type="number" id="api-temperature" min="0" max="2" step="0.1" value="0.7">
+                </div>
+                <div class="form-group">
+                    <label>最大Token数</label>
+                    <input type="number" id="api-max-tokens" value="2000">
+                </div>
+
+                <h3 class="section-title">总结API设置</h3>
+                <div class="form-group">
+                    <label>总结API地址</label>
+                    <input type="text" id="summary-api-url" placeholder="https://api.openai.com/v1/chat/completions">
+                </div>
+                <div class="form-group">
+                    <label>总结模型</label>
+                    <input type="text" id="summary-model" placeholder="gpt-4" value="gpt-4">
+                </div>
+
+                <h3 class="section-title">图像生成设置</h3>
+                <div class="form-group">
+                    <label>图像生成API</label>
+                    <input type="text" id="image-api-url" placeholder="https://api.openai.com/v1/images/generations">
+                </div>
+                <div class="form-group">
+                    <label>图像模型</label>
+                    <input type="text" id="image-model" placeholder="dall-e-3" value="dall-e-3">
+                </div>
+
+                <h3 class="section-title">TTS设置</h3>
+                <div class="form-group">
+                    <label>TTS API地址</label>
+                    <input type="text" id="tts-api-url" placeholder="https://api.openai.com/v1/audio/speech">
+                </div>
+                <div class="form-group">
+                    <label>语音模型</label>
+                    <select id="tts-voice">
+                        <option value="alloy">Alloy</option>
+                        <option value="echo">Echo</option>
+                        <option value="fable">Fable</option>
+                        <option value="onyx">Onyx</option>
+                        <option value="nova">Nova</option>
+                        <option value="shimmer">Shimmer</option>
+                    </select>
+                </div>
+
+                <h3 class="section-title">数据管理</h3>
+                <div class="form-group">
+                    <label>导入数据</label>
+                    <input type="file" id="import-file" accept=".json" onchange="importData()">
+                </div>
+
                 <button class="form-button" onclick="saveSettings()">保存设置</button>
             </div>
         </div>
