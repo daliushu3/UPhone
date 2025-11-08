@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>uPhone - AI虚拟手机</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- iPhone 外框 -->
+    <div class="iphone-frame">
+        <!-- 状态栏 -->
+        <div class="status-bar">
+            <div class="status-left">
+                <span id="carrier">uPhone</span>
+                <span class="signal-bars">
+                    <i></i><i></i><i></i><i></i>
+                </span>
+            </div>
+            <div class="status-center">
+                <span id="statusTime">12:00</span>
+            </div>
+            <div class="status-right">
+                <span class="battery-icon">
+                    <span class="battery-level"></span>
+                </span>
+                <span>100%</span>
+            </div>
+        </div>
+
+        <!-- 主屏幕 -->
+        <div class="screen" id="homeScreen">
+            <!-- 时间卡片 -->
+            <div class="time-card">
+                <div class="time" id="mainTime">12:00</div>
+                <div class="date" id="mainDate">1月1日 星期一</div>
+            </div>
+
+            <!-- 应用图标区域 -->
+            <div class="app-grid">
+                <div class="app-icon" data-app="wechat">
+                    <svg viewBox="0 0 100 100" class="icon-wechat">
+                        <circle cx="35" cy="35" r="8" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="65" cy="35" r="8" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <path d="M20 50 Q50 70 80 50" fill="none" stroke="currentColor" stroke-width="2"/>
+                        <rect x="15" y="15" width="70" height="60" rx="15" fill="none" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    <span>微信</span>
+                </div>
+                <div class="app-icon placeholder">
+                    <div class="app-icon-placeholder"></div>
+                    <span>待开发</span>
+                </div>
+                <div class="app-icon placeholder">
+                    <div class="app-icon-placeholder"></div>
+                    <span>待开发</span>
+                </div>
+                <div class="app-icon placeholder">
+                    <div class="app-icon-placeholder"></div>
+                    <span>待开发</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 微信应用 -->
+        <div class="app-screen hidden" id="wechatApp">
+            <!-- 微信顶部栏 -->
+            <div class="wechat-header">
+                <button class="back-btn" onclick="backToHome()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <path d="M12 4 L6 10 L12 16" stroke="currentColor" stroke-width="2" fill="none"/>
+                    </svg>
+                </button>
+                <h3>微信</h3>
+                <button class="add-chat-btn" onclick="showAddChat()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <line x1="10" y1="5" x2="10" y2="15" stroke="currentColor" stroke-width="2"/>
+                        <line x1="5" y1="10" x2="15" y2="10" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- 聊天列表 -->
+            <div class="chat-list" id="chatList">
+                <!-- 聊天项将通过JS动态添加 -->
+            </div>
+
+            <!-- 聊天界面 -->
+            <div class="chat-screen hidden" id="chatScreen">
+                <div class="chat-header">
+                    <button class="back-btn" onclick="backToChatList()">
+                        <svg width="20" height="20" viewBox="0 0 20 20">
+                            <path d="M12 4 L6 10 L12 16" stroke="currentColor" stroke-width="2" fill="none"/>
+                        </svg>
+                    </button>
+                    <div class="chat-info">
+                        <span class="chat-name" id="chatName">聊天</span>
+                    </div>
+                    <button class="chat-settings-btn" onclick="showChatSettings()">
+                        <svg width="20" height="20" viewBox="0 0 20 20">
+                            <circle cx="10" cy="5" r="2" fill="currentColor"/>
+                            <circle cx="10" cy="10" r="2" fill="currentColor"/>
+                            <circle cx="10" cy="15" r="2" fill="currentColor"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="messages-container" id="messagesContainer">
+                    <!-- 消息将通过JS动态添加 -->
+                </div>
+
+                <div class="input-area">
+                    <div class="input-toolbar">
+                        <button onclick="showSpecialInput('voice')" title="语音">🎤</button>
+                        <button onclick="showSpecialInput('image')" title="图片">🖼️</button>
+                        <button onclick="showSpecialInput('redpacket')" title="红包">🧧</button>
+                        <button onclick="showSpecialInput('location')" title="位置">📍</button>
+                        <button onclick="startNewTopic()" title="新话题">❤️</button>
+                        <button onclick="sendWithAI()" title="AI回复">✉️</button>
+                    </div>
+                    <div class="input-wrapper">
+                        <textarea id="messageInput" placeholder="输入消息..." rows="1"></textarea>
+                        <button class="send-btn" onclick="sendMessage()">发送</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设置页面 -->
+        <div class="settings-screen hidden" id="settingsScreen">
+            <div class="settings-header">
+                <button class="back-btn" onclick="closeSettings()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <path d="M12 4 L6 10 L12 16" stroke="currentColor" stroke-width="2" fill="none"/>
+                    </svg>
+                </button>
+                <h3>设置</h3>
+            </div>
+            
+            <div class="settings-content">
+                <div class="settings-section">
+                    <h4>聊天API设置</h4>
+                    <div class="setting-item">
+                        <label>API URL:</label>
+                        <input type="text" id="chatApiUrl" placeholder="https://api.openai.com/v1/chat/completions">
+                    </div>
+                    <div class="setting-item">
+                        <label>API Key:</label>
+                        <input type="password" id="chatApiKey" placeholder="sk-...">
+                    </div>
+                    <div class="setting-item">
+                        <label>模型:</label>
+                        <select id="chatModel">
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                            <option value="gpt-4">GPT-4</option>
+                            <option value="claude-3-opus">Claude 3 Opus</option>
+                            <option value="claude-3-sonnet">Claude 3 Sonnet</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label>温度 (0-2):</label>
+                        <input type="range" id="temperature" min="0" max="2" step="0.1" value="0.7">
+                        <span id="tempValue">0.7</span>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h4>总结API设置</h4>
+                    <div class="setting-item">
+                        <label>API URL:</label>
+                        <input type="text" id="summaryApiUrl" placeholder="https://api.openai.com/v1/chat/completions">
+                    </div>
+                    <div class="setting-item">
+                        <label>API Key:</label>
+                        <input type="password" id="summaryApiKey" placeholder="sk-...">
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h4>数据管理</h4>
+                    <button class="settings-btn" onclick="exportSettings()">导出设置</button>
+                    <button class="settings-btn" onclick="document.getElementById('importFile').click()">导入设置</button>
+                    <input type="file" id="importFile" style="display: none;" accept=".json" onchange="importSettings(this)">
+                    <button class="settings-btn danger" onclick="clearAllData()">清除所有数据</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主题设置页面 -->
+        <div class="theme-screen hidden" id="themeScreen">
+            <div class="theme-header">
+                <button class="back-btn" onclick="closeTheme()">
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        <path d="M12 4 L6 10 L12 16" stroke="currentColor" stroke-width="2" fill="none"/>
+                    </svg>
+                </button>
+                <h3>主题</h3>
+            </div>
+            
+            <div class="theme-content">
+                <div class="theme-section">
+                    <h4>配色方案</h4>
+                    <div class="color-schemes">
+                        <div class="color-scheme" data-theme="default" onclick="applyTheme('default')">
+                            <div class="color-preview" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"></div>
+                            <span>默认</span>
+                        </div>
+                        <div class="color-scheme" data-theme="dark" onclick="applyTheme('dark')">
+                            <div class="color-preview" style="background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)"></div>
+                            <span>暗黑</span>
+                        </div>
+                        <div class="color-scheme" data-theme="ocean" onclick="applyTheme('ocean')">
+                            <div class="color-preview" style="background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%)"></div>
+                            <span>海洋</span>
+                        </div>
+                        <div class="color-scheme" data-theme="forest" onclick="applyTheme('forest')">
+                            <div class="color-preview" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%)"></div>
+                            <span>森林</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="theme-section">
+                    <h4>壁纸设置</h4>
+                    <button class="theme-btn" onclick="document.getElementById('wallpaperFile').click()">选择壁纸</button>
+                    <input type="file" id="wallpaperFile" style="display: none;" accept="image/*" onchange="setWallpaper(this)">
+                    <button class="theme-btn" onclick="resetWallpaper()">恢复默认</button>
+                </div>
+
+                <div class="theme-section">
+                    <h4>字体设置</h4>
+                    <div class="setting-item">
+                        <label>全局字体:</label>
+                        <select id="globalFont" onchange="setGlobalFont(this.value)">
+                            <option value="system">系统默认</option>
+                            <option value="serif">衬线体</option>
+                            <option value="sans-serif">无衬线体</option>
+                            <option value="monospace">等宽字体</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label>聊天字体大小:</label>
+                        <input type="range" id="chatFontSize" min="12" max="20" value="14" onchange="setChatFontSize(this.value)">
+                        <span id="fontSizeValue">14px</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 角色设置弹窗 -->
+        <div class="modal hidden" id="characterModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>角色设置</h3>
+                    <button class="close-btn" onclick="closeCharacterModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-section">
+                        <h4>角色信息</h4>
+                        <div class="form-item">
+                            <label>角色昵称:</label>
+                            <input type="text" id="charNickname" placeholder="显示的名称">
+                        </div>
+                        <div class="form-item">
+                            <label>角色真名:</label>
+                            <input type="text" id="charRealname" placeholder="角色的真实名字">
+                        </div>
+                        <div class="form-item">
+                            <label>角色设定:</label>
+                            <textarea id="charSetting" rows="4" placeholder="描述角色的性格、背景、说话风格等"></textarea>
+                        </div>
+                        <div class="form-item">
+                            <label>角色头像:</label>
+                            <button onclick="document.getElementById('charAvatar').click()">选择图片</button>
+                            <input type="file" id="charAvatar" style="display: none;" accept="image/*">
+                            <div class="avatar-preview" id="charAvatarPreview"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>用户信息</h4>
+                        <div class="form-item">
+                            <label>用户昵称:</label>
+                            <input type="text" id="userNickname" placeholder="你的显示名称">
+                        </div>
+                        <div class="form-item">
+                            <label>用户真名:</label>
+                            <input type="text" id="userRealname" placeholder="你的真实名字">
+                        </div>
+                        <div class="form-item">
+                            <label>用户设定:</label>
+                            <textarea id="userSetting" rows="4" placeholder="描述用户的背景、性格等（可选）"></textarea>
+                        </div>
+                        <div class="form-item">
+                            <label>用户头像:</label>
+                            <button onclick="document.getElementById('userAvatar').click()">选择图片</button>
+                            <input type="file" id="userAvatar" style="display: none;" accept="image/*">
+                            <div class="avatar-preview" id="userAvatarPreview"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4>导入角色</h4>
+                        <button onclick="document.getElementById('importChar').click()">导入JSON/PNG</button>
+                        <input type="file" id="importChar" style="display: none;" accept=".json,.png" onchange="importCharacter(this)">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-cancel" onclick="closeCharacterModal()">取消</button>
+                    <button class="btn-primary" onclick="saveCharacter()">保存</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 聊天设置弹窗 -->
+        <div class="modal hidden" id="chatSettingsModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>聊天设置</h3>
+                    <button class="close-btn" onclick="closeChatSettings()">×</button>
+                </div>
+                <div class="modal-body">
+                    <div class="setting-item">
+                        <label>Token 使用量（估算）:</label>
+                        <span id="tokenCount">0</span>
+                    </div>
+                    <div class="setting-item">
+                        <label>聊天背景:</label>
+                        <button onclick="document.getElementById('chatBg').click()">选择背景</button>
+                        <input type="file" id="chatBg" style="display: none;" accept="image/*" onchange="setChatBackground(this)">
+                    </div>
+                    <div class="setting-item">
+                        <button class="btn-warning" onclick="archiveEvents()">事件归档</button>
+                        <button class="btn-danger" onclick="clearChatHistory()">清空聊天记录</button>
+                    </div>
+                    <div class="setting-item">
+                        <button onclick="exportChat()">导出聊天</button>
+                        <button onclick="document.getElementById('importChat').click()">导入聊天</button>
+                        <input type="file" id="importChat" style="display: none;" accept=".json" onchange="importChatData(this)">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-primary" onclick="closeChatSettings()">确定</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部导航栏 -->
+        <div class="bottom-nav">
+            <button class="nav-item" onclick="showSettings()">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12A3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5a3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97c0-.33-.03-.65-.07-.97l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65A.488.488 0 0 0 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.63c-.04.32-.07.65-.07.97c0 .33.03.65.07.97l-2.11 1.63c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.13-.22.07-.49-.12-.64l-2.11-1.63Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+                <span>设置</span>
+            </button>
+            <button class="nav-item" onclick="showTheme()">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m11.32-11.32l1.41-1.41" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+                <span>主题</span>
+            </button>
+            <button class="nav-item disabled">
+                <svg width="24" height="24" viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="3 3"/>
+                </svg>
+                <span>占位</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
